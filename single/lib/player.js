@@ -1,16 +1,18 @@
 import * as Util from './util';
 
 class Player {
-  constructor(x, y, size, playerDie, addNectar) {
+  constructor(id, x, y, size, game) {
+    this.id = id;
     this.x = x;
     this.y = y;
     this.size = size;
-    this.playerDie = playerDie;
-    this.purgeNectar = addNectar;
+    // this.playerDie = playerDie;
+    // this.purgeNectar = addNectar;
     this.color = Util.randomColor();
+    this.game = game
 
-    this.velX = 0
-    this.velY = 0
+    this.velX = 0.7
+    this.velY = 0.7
 
     this.speedMultiplier = 3;
 
@@ -23,7 +25,7 @@ class Player {
     this.radius = 15;
     this.zombies = [];
     for (let i = 0; i < this.size; i++) {
-      this.zombies.push([this.x, this.y])
+      this.zombies.push([this.x, this.y, [this.velX, this.velY]])
     }
   }
 
@@ -44,7 +46,7 @@ class Player {
 
   grow() {
     const lastZombie = this.zombies[this.size-1]
-    this.zombies.push([lastZombie[0], lastZombie[1]]);
+    this.zombies.push([lastZombie[0], lastZombie[1], lastZombie[2]]);
     this.size += 1;
     this.radius += 0.02;
   }
@@ -52,7 +54,8 @@ class Player {
   shrink() {
     if (this.count === 20) {
       const nectarCoords = this.zombies.pop();
-      this.purgeNectar(nectarCoords[0], nectarCoords[1], 5);
+      // this.purgeNectar(nectarCoords[0], nectarCoords[1], 5, this.color);
+      this.game.addNectar(nectarCoords[0], nectarCoords[1], 5, this.color);
       this.size -= 1;
       this.radius -= 0.02;
       this.count = 0;
@@ -60,15 +63,10 @@ class Player {
     this.count += 1;
   }
 
-  die() {
-    const coords = []
-    for (let i = 0; i < this.zombies.length; i++) {
-      if (i % 4 === 0) {
-        coords.push(this.zombies[i])
-      }
-    }
-    this.playerDie(coords);
-  }
+  // die() {
+  //
+  //   this.game.playerDie(this);
+  // }
 
 
   draw(context, xView, yView) {
@@ -79,57 +77,47 @@ class Player {
         const zyPos = zombie[1] - this.radius - yView;
         this.drawSegment(context, zxPos, zyPos, true)
       }
-      // const zombie = this.zombies[i];
-      // const zxPos = zombie[0] - this.radius - xView;
-      // const zyPos = zombie[1] - this.radius - yView;
-      // this.drawSegment(context, zxPos, zyPos, true)
     }
-
     const xPos = (this.x - this.radius) - xView;
     const yPos = (this.y - this.radius) - yView;
-
     this.drawSegment(context, xPos, yPos, true);
   }
 
   update(velocityScale, worldWidth, worldHeight) {
-
-    let startX = this.x;
-    let startY = this.y;
-
+    let nextX = this.x;
+    let nextY = this.y;
+    let nextVel = [this.velX, this.velY];
     for (let i = 0; i < this.zombies.length; i++) {
-      let zX = this.zombies[i][0];
-      let zY = this.zombies[i][1];
-
-      // this.zombies[i][0] = startX;
-      this.zombies[i] = [startX, startY];
-      // this.zombies[i][1] = startY;
-      startX = zX;
-      startY = zY;
+      let zX = nextX;
+      let zY = nextY;
+      let zV = nextVel;
+      nextX = this.zombies[i][0];
+      nextY = this.zombies[i][1];
+      nextVel = this.zombies[i][2];
+      this.zombies[i] = [zX, zY, zV];
     }
 
     this.x += (this.velX * velocityScale) * this.speedMultiplier;
     this.y += (this.velY * velocityScale) * this.speedMultiplier;
 
     if (this.x - this.radius < 0) {
-
-      this.die();
-      // this.x = this.radius;
+      // this.die();
+      this.game.playerDie(this);
     }
     if (this.y - this.radius < 0) {
-      this.die();
-      // this.y = this.radius;
+      // this.die();
+      this.game.playerDie(this);
     }
     if (this.x + this.radius > worldWidth) {
-      this.die();
-      // this.x = worldWidth - this.radius;
+      // this.die();
+      this.game.playerDie(this);
     }
     if (this.y + this.radius > worldHeight) {
-      this.die();
-      // this.y = worldHeight - this.radius;
+      // this.die();
+      this.game.playerDie(this);
     }
 
     if (this.boosting) {
-
       this.shrink();
     }
   }
