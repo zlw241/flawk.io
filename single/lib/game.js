@@ -132,16 +132,16 @@ class Game {
     this.requestId = window.requestAnimationFrame(this.gameLoop.bind(this))
   }
 
-  handleServerInput() {
-    this.socket.on('server update', (data) => {
-      Object.values(this.players).forEach((player) => {
-        if (player.id !== window.playerId) {
-          player.x = data[player.id][0];
-          player.y = data[player.id][1];
-        }
-      })
-    })
-  }
+  // handleServerInput() {
+  //   this.socket.on('server update', (data) => {
+  //     Object.values(this.players).forEach((player) => {
+  //       if (player.id !== window.playerId) {
+  //         player.x = data[player.id][0];
+  //         player.y = data[player.id][1];
+  //       }
+  //     })
+  //   })
+  // }
 
   calculateNewVector(startRadians, targetRadians) {
     if (startRadians < 0 && targetRadians < 0) {
