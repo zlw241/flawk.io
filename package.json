@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "webpack -w",
+    "postinstall": "webpack",
     "profile": "node --prof server.js",
     "start": "node server.js",
     "run": "node server.js",
