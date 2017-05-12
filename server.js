@@ -6,7 +6,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const UUID = require('node-uuid');
-const gameport = process.env.PORT || 5000;
+const gameport = process.env.PORT || 3000;
 const verbose = false;
 
 
@@ -24,7 +24,7 @@ app.get( '/*' , ( req, res, next ) => {
   res.sendfile( __dirname + '/' + file );
 });
 
-http.listen(process.env.PORT || gameport, () => {
+http.listen(process.env.PORT || 3000, () => {
   console.log('\t :: Express :: Listening on port ' + gameport );
 });
 
