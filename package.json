@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack -w",
     "profile": "node --prof server.js",
+    "start": "node server.js",
     "run": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -28,5 +29,8 @@
     "node-uuid": "^1.4.8",
     "socket.io": "^1.7.3",
     "webpack": "^2.5.1"
+  },
+  "engines": {
+    "node": "4.1.1"
   }
 }
