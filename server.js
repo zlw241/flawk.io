@@ -24,9 +24,9 @@ app.get( '/*' , ( req, res, next ) => {
   res.sendfile( __dirname + '/' + file );
 });
 
-http.listen(gameport, '0.0.0.0', () => {
+http.listen(process.env.PORT || gameport, () => {
   console.log('\t :: Express :: Listening on port ' + gameport );
-})
+});
 
 
 new GameServer(io);
