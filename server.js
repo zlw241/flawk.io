@@ -9,7 +9,7 @@ const UUID = require('node-uuid');
 const gameport = process.env.PORT || 3000;
 const verbose = false;
 
-
+io.set('transports', ['websocket']);
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
